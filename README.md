@@ -1,7 +1,7 @@
 # Hybrid Quantum-Classical Financial Regime Detection & QAOA Portfolio Engine
 
-[![CI Suite](https://github.com/Sawy05/quantum-hybrid-portfolio-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/Sawy05/quantum-hybrid-portfolio-engine/actions/workflows/ci.yml)
-[![Compile Thesis PDF](https://github.com/Sawy05/quantum-hybrid-portfolio-engine/actions/workflows/compile-report.yml/badge.svg)](https://github.com/Sawy05/quantum-hybrid-portfolio-engine/actions/workflows/compile-report.yml)
+[![CI Suite](https://github.com/Sawy05/Quantum-hybrid-portfolio-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/Sawy05/Quantum-hybrid-portfolio-engine/actions/workflows/ci.yml)
+[![Compile Thesis PDF](https://github.com/Sawy05/Quantum-hybrid-portfolio-engine/actions/workflows/compile-report.yml/badge.svg)](https://github.com/Sawy05/Quantum-hybrid-portfolio-engine/actions/workflows/compile-report.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![PennyLane](https://img.shields.io/badge/PennyLane-0.45%2B-purple.svg)](https://pennylane.ai/)
@@ -189,8 +189,8 @@ quantum-hybrid-portfolio-engine/
 ### Local Installation
 ```bash
 # Clone the repository
-git clone https://github.com/Sawy05/quantum-hybrid-portfolio-engine.git
-cd quantum-hybrid-portfolio-engine
+git clone https://github.com/Sawy05/Quantum-hybrid-portfolio-engine.git
+cd Quantum-hybrid-portfolio-engine
 
 # Create and activate virtual environment
 python -m venv .venv
@@ -243,7 +243,7 @@ If you utilize this engine or its mathematical formulations in your research, pl
   title        = {Production-Grade Hybrid Quantum-Classical Quantitative Regime Detection and QAOA Portfolio Optimization Engine},
   year         = {2026},
   publisher    = {GitHub},
-  howpublished = {\url{https://github.com/Sawy05/quantum-hybrid-portfolio-engine}}
+  howpublished = {\url{https://github.com/Sawy05/Quantum-hybrid-portfolio-engine}}
 }
 ```
 

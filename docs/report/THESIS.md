@@ -2,7 +2,7 @@
 
 **Author:** Ahmed Elsawy ([@Sawy05](https://github.com/Sawy05))  
 **Role:** Principal Quantum Machine Learning (QML) Research Scientist & Staff ML Systems Engineer  
-**Repository:** [`Sawy05/quantum-hybrid-portfolio-engine`](https://github.com/Sawy05/quantum-hybrid-portfolio-engine)  
+**Repository:** [`Sawy05/Quantum-hybrid-portfolio-engine`](https://github.com/Sawy05/Quantum-hybrid-portfolio-engine)  
 **Date:** October 2026  
 **License:** Apache 2.0  
 
