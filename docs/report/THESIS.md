@@ -28,41 +28,41 @@ To address physical Noisy Intermediate-Scale Quantum (NISQ) hardware constraints
 
 ```mermaid
 flowchart TD
-    subgraph DataPipeline ["1. Multi-Asset Data & Quantum Feature Pipeline"]
-        A["Synthetic Regime-Switching GBM / Historical Tickers"] --> B["Rolling Log-Returns & Volatility Clustering"]
-        B --> C["Cross-Asset Correlation Eigen-Decomposition"]
-        C --> D["Dimensionality Reduction & Angle Mapping [-pi, pi]"]
+    subgraph DataPipeline ["1. Multi-Asset Data and Feature Pipeline"]
+        A["Synthetic Regime-Switching GBM and Tickers"] --> B["Rolling Log-Returns and Volatility Clustering"]
+        B --> C["Cross-Asset Correlation Eigenspace"]
+        C --> D["Dimensionality Reduction to Angles: -pi to +pi"]
     end
 
-    subgraph Stage1Classifier ["2. Stage 1: Hybrid VQC & Quantum Kernel Regime Detection"]
-        D --> E["Classical Temporal Extractor (LSTM)"]
-        E --> F["Classical-to-Quantum Projection"]
-        F --> G["Quantum Encoding (Angle / IQP Embedding)"]
-        G --> H["Variational Circuit (Strongly Entangling Layers)"]
-        H --> I["Pauli-Z Expectation Telemetry <Z_i>"]
+    subgraph Stage1Classifier ["2. Stage 1: Hybrid VQC and Quantum Kernel"]
+        D --> E["Classical Temporal Extractor: LSTM"]
+        E --> F["Classical-to-Quantum Linear Projection"]
+        F --> G["Quantum Encoding: Angle and IQP Embedding"]
+        G --> H["Variational Circuit: Strongly Entangling Layers"]
+        H --> I["Pauli-Z Expectation Telemetry"]
         I --> J["Dense Classification Head"]
-        J --> K{"Predicted Market Regime: Bull / Bear / Crash"}
+        J --> K["Predicted Market Regime: Bull / Bear / Crash"]
     end
 
     subgraph Stage2QAOA ["3. Stage 2: Combinatorial QAOA Portfolio Optimizer"]
-        K --> L["Extract Regime-Calibrated Drift mu and Covariance Sigma"]
-        L --> M["QUBO Formulation: min (lambda/2) x^T Sigma x - mu^T x + A(sum x_i - K)^2"]
-        M --> N["Ising Transformation: x_i = (1 - Z_i)/2 -> H_C = sum h_i Z_i + sum J_ij Z_i Z_j"]
-        N --> O["QAOA State Prep: |psi(gamma, beta)> = prod e^{-i beta H_B} e^{-i gamma H_C} |+>^N"]
+        K --> L["Regime-Calibrated Drift mu and Covariance Sigma"]
+        L --> M["QUBO Formulation with Penalty Parameter A"]
+        M --> N["Ising Transformation: Spin Variable Substitution"]
+        N --> O["QAOA State Prep: Alternating Cost and Mixer Layers"]
         O --> P["Classical Optimizer: COBYLA / SPSA / Adam"]
         P --> O
         P --> Q["Optimal Discrete Asset Allocation Bitstring x*"]
     end
 
-    subgraph ErrorMitigation ["4. NISQ Error Mitigation & Diagnostics"]
-        O -.-> R["NISQ Noise Simulation (Depolarizing, Phase Damping, Readout)"]
-        R -.-> S["Unitary Folding U -> U(U_dag U)^n"]
+    subgraph ErrorMitigation ["4. NISQ Error Mitigation and Diagnostics"]
+        O -.-> R["NISQ Noise Simulation: Depolarizing, Phase, Readout"]
+        R -.-> S["Unitary Folding: U to U(U_dag U)^n"]
         S -.-> T["Richardson Zero-Noise Extrapolation (ZNE)"]
-        T -.-> U["Barren Plateau Diagnostic (Var(d<H>/d theta))"]
+        T -.-> U["Barren Plateau Diagnostic: Variance Tracking"]
     end
 
-    subgraph OutputAPI ["5. Production REST API & Visualization"]
-        Q --> V["FastAPI Engine (/v1/predict-regime, /v1/optimize-portfolio, /v1/circuit-specs)"]
+    subgraph OutputAPI ["5. Production REST API and Visualization"]
+        Q --> V["FastAPI Engine: /v1/predict-regime, /v1/optimize-portfolio"]
     end
 ```
 
@@ -187,19 +187,19 @@ sequenceDiagram
     participant Eigensolver as Classical Benchmark (Exact Eigensolver)
 
     Note over ClassicalOpt, QuantumChip: Variational QAOA Optimization Loop
-    ClassicalOpt->>QuantumChip: Initialize parameters gamma_0, beta_0
-    loop For each step k in 1..max_iterations
-        QuantumChip->>QuantumChip: Apply Hadamard Layer H^{\otimes N}
-        QuantumChip->>QuantumChip: Apply Cost Unitary U(H_C, gamma_k)
-        QuantumChip->>QuantumChip: Apply Mixer Unitary U(H_B, beta_k)
+    ClassicalOpt->>QuantumChip: Initialize parameters (gamma_0, beta_0)
+    loop For each iteration step
+        QuantumChip->>QuantumChip: Apply Hadamard Layer on all N qubits
+        QuantumChip->>QuantumChip: Apply Cost Unitary U(H_C, gamma)
+        QuantumChip->>QuantumChip: Apply Mixer Unitary U(H_B, beta)
         QuantumChip->>QuantumChip: Measure Bitstring Distribution P(z)
-        QuantumChip->>ClassicalOpt: Return Expected Cost <H_C> = sum P(z) E_C(z)
-        ClassicalOpt->>ClassicalOpt: Update (gamma, beta) to minimize <H_C>
+        QuantumChip->>ClassicalOpt: Return Expected Cost Exp(H_C)
+        ClassicalOpt->>ClassicalOpt: Update (gamma, beta) to minimize cost
     end
     ClassicalOpt->>QuantumChip: Run optimal parameters (gamma*, beta*)
     QuantumChip-->>ClassicalOpt: Optimal Bitstring x* and Probability P(x*)
-    ClassicalOpt->>Eigensolver: Compare against Ground State Energy E_exact
-    Eigensolver-->>ClassicalOpt: Return Approximation Ratio r = (E_worst - E*) / (E_worst - E_exact)
+    ClassicalOpt->>Eigensolver: Compare against Ground State Energy
+    Eigensolver-->>ClassicalOpt: Return Approximation Ratio r
 ```
 
 ---

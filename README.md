@@ -19,32 +19,32 @@ A production-grade, mathematically formalized **Hybrid Quantum-Classical Quantit
 
 ```mermaid
 flowchart LR
-    subgraph Stage0 [Data Pipeline]
-        M1[Synthetic Regime-Switching GBM] --> M2[Rolling Volatility & Log-Returns]
-        M2 --> M3[Cross-Asset Correlation Eigenspace]
-        M3 --> M4[Angle Mapping in [-pi, pi]]
+    subgraph Stage0 ["Stage 0: Data Pipeline"]
+        M1["Synthetic Regime-Switching GBM"] --> M2["Rolling Volatility and Returns"]
+        M2 --> M3["Cross-Asset Correlation Eigenspace"]
+        M3 --> M4["Angle Mapping: from -pi to +pi"]
     end
 
-    subgraph Stage1 [Regime Classifier]
-        M4 --> Q1[Classical LSTM Extractor]
-        Q1 --> Q2[PennyLane TorchLayer VQC]
-        Q2 --> Q3[Pauli-Z Expectation Telemetry]
-        Q3 --> Q4{Regime: Bull / Bear / Crash}
+    subgraph Stage1 ["Stage 1: Regime Classifier"]
+        M4 --> Q1["Classical LSTM Extractor"]
+        Q1 --> Q2["PennyLane TorchLayer VQC"]
+        Q2 --> Q3["Pauli-Z Expectation Telemetry"]
+        Q3 --> Q4["Regime Output: Bull, Bear, Crash"]
     end
 
-    subgraph Stage2 [QAOA Optimizer]
-        Q4 --> O1[Regime Covariance & Drift]
-        O1 --> O2[QUBO Formulation with Penalty A]
-        O2 --> O3[Ising Hamiltonian Mapping]
-        O3 --> O4[QAOA Variational State Prep]
-        O4 --> O5[COBYLA / SPSA Optimization]
-        O5 --> O6[Optimal Asset Bitstring x*]
+    subgraph Stage2 ["Stage 2: QAOA Optimizer"]
+        Q4 --> O1["Regime Covariance and Drift"]
+        O1 --> O2["QUBO Portfolio with Penalty A"]
+        O2 --> O3["Ising Hamiltonian Mapping"]
+        O3 --> O4["QAOA Variational State Prep"]
+        O4 --> O5["COBYLA / SPSA Optimization"]
+        O5 --> O6["Optimal Asset Bitstring x*"]
     end
 
-    subgraph Stage3 [NISQ Mitigation & API]
-        O4 -.-> N1[ZNE Unitary Folding U -> U(U_dag U)^n]
-        N1 -.-> N2[Richardson Extrapolation]
-        O6 --> S1[FastAPI REST API /v1/optimize-portfolio]
+    subgraph Stage3 ["Stage 3: NISQ Mitigation and API"]
+        O4 -.-> N1["ZNE Unitary Folding: U to U (U_dag U)^n"]
+        N1 -.-> N2["Richardson Extrapolation"]
+        O6 --> S1["FastAPI REST API: optimize-portfolio"]
     end
 ```
 
