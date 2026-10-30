@@ -1,0 +1,33 @@
+\section{Hilbert Space Feature Mapping \& Quantum Kernels}
+\label{sec:hilbert}
+
+Let $\mathbf{x} \in \mathbb{R}^N$ represent classical quantitative market features (rolling annualized log-returns, realized volatility, and correlation eigenvalues) normalized to $[-\pi, \pi]^N$. We embed classical vectors into a $2^N$-dimensional complex Hilbert space $\mathcal{H} = (\mathbb{C}^2)^{\otimes N}$ via unitary feature maps $U(\mathbf{x})$.
+
+\subsection{Angle Embedding}
+Angle embedding applies product state single-qubit rotations:
+\begin{equation}
+    \ket{\psi(\mathbf{x})} = \bigotimes_{i=1}^N R_y(x_i) \ket{0}^{\otimes N} = \bigotimes_{i=1}^N \left( \cos\frac{x_i}{2}\ket{0} + \sin\frac{x_i}{2}\ket{1} \right)
+\end{equation}
+While computationally efficient with $\mathcal{O}(N)$ circuit depth and zero two-qubit entanglement, product states cannot capture cross-asset correlation topology directly in quantum phase space.
+
+\subsection{Instantaneous Quantum Polynomial (IQP) Embedding}
+To introduce classically intractable multi-body phase correlations~\cite{havlicek2019supervised}, we implement the IQP embedding:
+\begin{equation}
+    U_{\text{IQP}}(\mathbf{x}) = \left( \prod_{i < j} e^{-i x_i x_j Z_i Z_j / 2} \right) \left( \prod_{i=1}^N e^{-i x_i Z_i / 2} \right) H^{\otimes N}
+\end{equation}
+where $H$ denotes the Hadamard gate and $Z_i$ is the Pauli-$Z$ operator on wire $i$. Sampling from IQP circuits is known to be classically hard under plausible complexity conjectures.
+
+\subsection{Quantum Kernel Estimation \& Reproducing Kernel Hilbert Space}
+Given two market feature vectors $\mathbf{x}, \mathbf{x}' \in \mathbb{R}^N$, the quantum transition fidelity defines an implicit positive semi-definite kernel:
+\begin{equation}
+    K(\mathbf{x}, \mathbf{x}') = \left| \braket{\psi(\mathbf{x}') | \psi(\mathbf{x})} \right|^2 = \mathrm{Tr}\left( \rho(\mathbf{x}) \rho(\mathbf{x}') \right)
+\end{equation}
+In PennyLane, we compute $K(\mathbf{x}, \mathbf{x}')$ by executing $U(\mathbf{x})$ followed by the adjoint $U^\dagger(\mathbf{x}')$, measuring the ground state projection probability:
+\begin{equation}
+    K(\mathbf{x}, \mathbf{x}') = \left| \braket{0^{\otimes N} | U^\dagger(\mathbf{x}') U(\mathbf{x}) | 0^{\otimes N}} \right|^2 = P(|0\dots 0\rangle)
+\end{equation}
+To counter exponential state concentration in high qubit dimensions, we implement the Projected Quantum Kernel (PQK)~\cite{huang2021power}:
+\begin{equation}
+    K_{\text{PQK}}(\mathbf{x}, \mathbf{x}') = \exp\left( -\gamma \sum_{k=1}^N \sum_{P \in \{X, Y, Z\}} (\langle P_k \rangle_{\mathbf{x}} - \langle P_k \rangle_{\mathbf{x}'})^2 \right)
+\end{equation}
+which preserves non-vanishing geometric distance across localized density matrices $\rho_k(\mathbf{x}) = \mathrm{Tr}_{\bar{k}}\left(\ket{\psi(\mathbf{x})}\bra{\psi(\mathbf{x})}\right)$.

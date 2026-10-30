@@ -1,0 +1,30 @@
+\section{NISQ Noise Simulation, ZNE \& Barren Plateaus}
+\label{sec:noise}
+
+\subsection{NISQ Noise Modeling}
+Physical execution on superconducting and trapped-ion processors is subject to non-unitary environment interactions. We model noise via quantum operations in PennyLane's density matrix backend:
+\begin{enumerate}
+    \item \textbf{Depolarizing Channel:} $\mathcal{E}_{\text{dep}}(\rho) = (1 - p)\rho + \frac{p}{3}(X\rho X + Y\rho Y + Z\rho Z)$.
+    \item \textbf{Phase Damping Channel:} $\mathcal{E}_{\text{phase}}(\rho) = M_0 \rho M_0^\dagger + M_1 \rho M_1^\dagger$, modeling continuous phase decoherence ($T_2$).
+    \item \textbf{Readout Bit-Flip:} Classical measurement error with flip probability $p_{\text{readout}}$.
+\end{enumerate}
+
+\subsection{Zero-Noise Extrapolation (ZNE) via Unitary Folding}
+To recover ideal expectation values without physical error correction, we implement ZNE using unitary folding:
+\begin{equation}
+    U \longrightarrow U \left( U^\dagger U \right)^n
+\end{equation}
+where $n \in \mathbb{N}$ scales the effective noise by an odd integer $\lambda = 2n + 1$. In noiseless theory, $(U^\dagger U)^n = I$, leaving the logical operation unchanged while physical gate noise scales linearly with $\lambda$.
+
+Measuring noisy expectation values $E(\lambda_j)$ across scale factors $\lambda \in \{1, 3, 5\}$, we compute the zero-noise limit via Richardson extrapolation:
+\begin{equation}
+    \hat{E}_0 = \sum_{j=1}^K \gamma_j E(\lambda_j), \quad \gamma_j = \prod_{l \neq j} \frac{\lambda_l}{\lambda_l - \lambda_j}
+\end{equation}
+which cancels error terms through order $\mathcal{O}(\lambda^{K-1})$.
+
+\subsection{Barren Plateau Scaling Analysis}
+In deep random parameterized circuits, the gradient variance decays exponentially with the number of qubits $N$~\cite{mcclean2018barren}:
+\begin{equation}
+    \mathrm{Var}_{\boldsymbol{\theta}}\left( \frac{\partial \langle H \rangle}{\partial \theta_k} \right) \in \mathcal{O}\left( 2^{-N} \right)
+\end{equation}
+resulting in flat optimization landscapes where gradient-based updates stall. We mitigate this through layer-wise identity-block pre-training~\cite{skolik2021layerwise}, initializing weights near identity transformations $\theta \sim \mathcal{N}(0, \sigma^2)$ rather than Haar-random distributions, preserving non-vanishing gradients across increasing circuit depths.

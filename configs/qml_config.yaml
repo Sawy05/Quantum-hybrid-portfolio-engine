@@ -1,0 +1,60 @@
+market:
+  n_assets: 4
+  n_steps: 1200
+  dt: 0.00396825396  # 1/252 trading days
+  random_seed: 42
+  regimes:
+    - name: "BULL"
+      drift: [0.12, 0.15, 0.10, 0.08]
+      volatility: [0.12, 0.14, 0.10, 0.11]
+    - name: "BEAR"
+      drift: [-0.15, -0.18, -0.10, -0.12]
+      volatility: [0.25, 0.28, 0.22, 0.24]
+    - name: "CRASH"
+      drift: [-0.45, -0.55, -0.40, -0.50]
+      volatility: [0.55, 0.65, 0.50, 0.58]
+  transition_matrix:
+    - [0.96, 0.03, 0.01]
+    - [0.05, 0.92, 0.03]
+    - [0.10, 0.20, 0.70]
+
+quantum_circuit:
+  n_qubits: 4
+  circuit_depth: 3
+  encoding_type: "angle"  # "angle" or "iqp"
+  entanglement_topology: "ring"  # "ring" or "all-to-all"
+  diff_method: "parameter-shift"  # "parameter-shift" or "adjoint"
+
+hybrid_classifier:
+  sequence_length: 10
+  feature_dim: 4
+  hidden_dim: 16
+  num_classes: 3
+  learning_rate: 0.01
+  batch_size: 16
+  epochs: 15
+
+kernel_svm:
+  n_qubits: 4
+  circuit_layers: 2
+  c_param: 1.0
+
+qaoa:
+  p_steps: 2
+  optimizer: "COBYLA"  # "COBYLA", "Adam", "SPSA"
+  max_iterations: 80
+  learning_rate: 0.05
+  risk_aversion: 0.5
+  penalty_coeff: 12.0
+  cardinality_k: 2
+
+noise_mitigation:
+  depolarizing_prob: 0.02
+  phase_damping_prob: 0.01
+  readout_error_prob: 0.02
+  zne_scale_factors: [1, 3, 5]
+  extrapolation_method: "richardson"  # "richardson", "polynomial", "linear"
+
+api:
+  host: "0.0.0.0"
+  port: 8000

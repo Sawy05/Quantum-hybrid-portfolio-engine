@@ -1,0 +1,52 @@
+\documentclass[11pt,a4paper,twocolumn]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{braket}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=blue,
+    pdftitle={Hybrid Quantum-Classical Quantitative Regime Detection and QAOA Portfolio Engine},
+    pdfauthor={Ahmed Elsawy (@Sawy05)}
+}
+
+\title{\textbf{Production-Grade Hybrid Quantum-Classical Quantitative Regime Detection and QAOA Combinatorial Portfolio Optimization}}
+\author{
+    \textbf{Ahmed Elsawy}\thanks{Lead Researcher \& Staff ML Systems Engineer (\texttt{@Sawy05}). Corresponding author: \href{https://github.com/Sawy05/quantum-hybrid-portfolio-engine}{\texttt{github.com/Sawy05/quantum-hybrid-portfolio-engine}}} \\
+    \textit{Principal Quantum Machine Learning Research Division}
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Financial market regime detection and non-convex combinatorial asset allocation represent significant computational bottlenecks in modern quantitative finance. In this thesis, we develop, mathematically formalize, and empirically evaluate a production-grade end-to-end Hybrid Quantum-Classical Quantitative Trading and Portfolio Engine. The system integrates two core quantum algorithmic stages: (1) a hybrid Classical LSTM-Variational Quantum Circuit (VQC) and Projected Quantum Kernel Support Vector Machine (QSVM) operating on Hilbert space feature mappings ($\mathcal{H} = (\mathbb{C}^2)^{\otimes N}$) to classify non-linear non-stationary market regimes (Bull, Bear, High-Volatility Crash); and (2) a Quantum Approximate Optimization Algorithm (QAOA) engine that maps cardinality-constrained Markowitz Mean-Variance portfolio optimization onto an Ising Spin Glass Cost Hamiltonian $H_C = \sum_i h_i Z_i + \sum_{i<j} J_{ij} Z_i Z_j + c \cdot I$. To address Noisy Intermediate-Scale Quantum (NISQ) hardware limitations, we integrate Zero-Noise Extrapolation (ZNE) via unitary folding and analyze Barren Plateau concentration phenomena $\mathrm{Var}(\partial_k \langle H \rangle) \in \mathcal{O}(2^{-N})$, showing how layer-wise identity initialization preserves non-vanishing optimization gradients. Empirical backtesting demonstrates a QAOA approximation ratio of $r=0.9978$ against exact classical diagonalization, with ZNE mitigating 99.61\% of simulated hardware depolarizing noise.
+\end{abstract}
+
+\input{sections/01_introduction.tex}
+\input{sections/02_hilbert_mappings.tex}
+\input{sections/03_variational_qml.tex}
+\input{sections/04_ising_formulation.tex}
+\input{sections/05_qaoa_portfolio.tex}
+\input{sections/06_nisq_noise_zne.tex}
+\input{sections/07_empirical_results.tex}
+\input{sections/08_conclusion.tex}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,49 @@
+\section{Ising Hamiltonian Mapping for Combinatorial Portfolios}
+\label{sec:ising}
+
+\subsection{Quadratic Unconstrained Binary Optimization (QUBO)}
+Markowitz Mean-Variance portfolio selection with cardinality constraints requires choosing a subset of $K$ assets from $N$ candidates to minimize risk penalty while maximizing expected return:
+\begin{align}
+    \min_{\mathbf{x} \in \{0, 1\}^N} & \quad \frac{\lambda}{2} \mathbf{x}^T \mathbf{\Sigma} \mathbf{x} - \boldsymbol{\mu}^T \mathbf{x} + A \left( \sum_{i=1}^N x_i - K \right)^2
+\end{align}
+where $\boldsymbol{\mu} \in \mathbb{R}^N$ is the asset return vector, $\mathbf{\Sigma} \in \mathbb{R}^{N \times N}$ is the return covariance matrix, $\lambda > 0$ is risk aversion, and $A > 0$ is the cardinality penalty coefficient.
+
+Expanding the cardinality constraint using $x_i^2 = x_i$ for binary variables $x_i \in \{0, 1\}$:
+\begin{align}
+    \left( \sum_{i=1}^N x_i - K \right)^2 &= \sum_{i=1}^N x_i^2 + 2 \sum_{i < j} x_i x_j - 2 K \sum_{i=1}^N x_i + K^2 \notag \\
+    &= (1 - 2K) \sum_{i=1}^N x_i + 2 \sum_{i < j} x_i x_j + K^2
+\end{align}
+This forms the standard QUBO problem:
+\begin{equation}
+    f(\mathbf{x}) = \mathbf{x}^T \mathbf{Q} \mathbf{x} + c_{\text{qubo}}
+\end{equation}
+where:
+\begin{align}
+    Q_{ii} &= \frac{\lambda}{2} \Sigma_{ii} - \mu_i + A(1 - 2K) \\
+    Q_{ij} &= \frac{\lambda}{2} \Sigma_{ij} + A \quad (i \neq j) \\
+    c_{\text{qubo}} &= A K^2
+\end{align}
+
+\subsection{Spin Glass Transformation to Pauli-Z Ising Hamiltonian}
+To map QUBO onto quantum hardware, we replace binary decision variables $x_i \in \{0, 1\}$ with Pauli-$Z$ spin observables $Z_i \in \{-1, +1\}$ via the transformation:
+\begin{equation}
+    x_i = \frac{I - Z_i}{2}
+\end{equation}
+Substituting into cross-product terms:
+\begin{equation}
+    x_i x_j = \frac{I - Z_i - Z_j + Z_i Z_j}{4}
+\end{equation}
+Grouping linear and quadratic Pauli-$Z$ components gives the Ising Cost Hamiltonian:
+\begin{equation}
+    H_C = \sum_{i=1}^N h_i Z_i + \sum_{i < j} J_{ij} Z_i Z_j + \Delta_{\text{offset}} \cdot I
+\end{equation}
+where the coupling coefficients and external fields are derived exactly as:
+\begin{align}
+    J_{ij} &= \frac{Q_{ij} + Q_{ji}}{4} \\
+    h_i &= -\frac{1}{2} Q_{ii} - \frac{1}{4} \sum_{j \neq i} (Q_{ij} + Q_{ji}) \\
+    \Delta_{\text{offset}} &= c_{\text{qubo}} + \frac{1}{2} \sum_{i=1}^N Q_{ii} + \frac{1}{4} \sum_{i < j} (Q_{ij} + Q_{ji})
+\end{align}
+This algebraic mapping guarantees that for every bitstring $\mathbf{x} \in \{0, 1\}^N$ and corresponding spin configuration $s_i = 1 - 2 x_i$, the energy spectra are identical:
+\begin{equation}
+    f(\mathbf{x}) \equiv \braket{\mathbf{s} | H_C | \mathbf{s}}
+\end{equation}

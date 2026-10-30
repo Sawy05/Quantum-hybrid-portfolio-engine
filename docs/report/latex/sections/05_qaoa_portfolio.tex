@@ -1,0 +1,25 @@
+\section{Quantum Approximate Optimization Algorithm (QAOA)}
+\label{sec:qaoa}
+
+QAOA maps combinatorial optimization into variational state preparation under alternating applications of the Cost Hamiltonian $H_C$ and Mixer Hamiltonian $H_B = \sum_{i=1}^N X_i$ across $p$ layers:
+\begin{equation}
+    \ket{\boldsymbol{\gamma}, \boldsymbol{\beta}} = \prod_{k=1}^p \left( e^{-i \beta_k H_B} e^{-i \gamma_k H_C} \right) \ket{+}^{\otimes N}
+\end{equation}
+where $\ket{+}^{\otimes N} = H^{\otimes N} \ket{0}^{\otimes N}$ represents the uniform superposition over all $2^N$ combinatorial states.
+
+\subsection{Circuit Implementation}
+\begin{enumerate}
+    \item \textbf{Cost Unitary $U(H_C, \gamma_k)$:} Decomposed into single-qubit $R_z(2 \gamma_k h_i)$ rotations and two-qubit entangling gates $e^{-i \gamma_k J_{ij} Z_i Z_j}$ implemented via CNOT-RZ-CNOT sequences.
+    \item \textbf{Mixer Unitary $U(H_B, \beta_k)$:} Single-qubit transverse field rotations $R_x(2 \beta_k)$ applied independently to all wires.
+\end{enumerate}
+
+\subsection{Variational Optimization Loop \& Metrics}
+The variational parameters $(\boldsymbol{\gamma}, \boldsymbol{\beta}) \in \mathbb{R}^{2p}$ are updated via classical optimizers (COBYLA or SPSA) minimizing the expected Hamiltonian energy:
+\begin{equation}
+    E(\boldsymbol{\gamma}, \boldsymbol{\beta}) = \braket{\boldsymbol{\gamma}, \boldsymbol{\beta} | H_C | \boldsymbol{\gamma}, \boldsymbol{\beta}} = \sum_{\mathbf{z} \in \{0, 1\}^N} P(\mathbf{z}) E_C(\mathbf{z})
+\end{equation}
+The optimization quality is quantified by the Approximation Ratio:
+\begin{equation}
+    r = \frac{E_{\text{worst}} - E(\boldsymbol{\gamma}^*, \boldsymbol{\beta}^*)}{E_{\text{worst}} - E_{\text{ground}}} \in [0, 1]
+\end{equation}
+benchmarked directly against the Exact Classical Minimum Eigensolver and Classical Simulated Annealing.

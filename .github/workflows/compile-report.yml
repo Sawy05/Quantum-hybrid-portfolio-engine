@@ -1,0 +1,49 @@
+name: Compile Academic Thesis & Release PDF
+
+on:
+  push:
+    paths:
+      - 'docs/report/**'
+      - '.github/workflows/compile-report.yml'
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf:
+    name: Compile LaTeX Thesis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX Document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: docs/report/latex
+          args: -pdf -file-line-error -interaction=nonstopmode
+
+      - name: Rename Output PDF
+        run: |
+          mkdir -p build_output
+          cp docs/report/latex/main.pdf build_output/quantum_qml_thesis.pdf
+
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quantum_qml_thesis
+          path: build_output/quantum_qml_thesis.pdf
+          retention-days: 90
+
+      - name: Create Release and Attach PDF (Tags only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build_output/quantum_qml_thesis.pdf
+          generate_release_notes: true

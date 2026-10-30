@@ -1,0 +1,18 @@
+\section{Introduction}
+\label{sec:intro}
+
+Quantitative portfolio management hinges upon two fundamental mathematical operations: (1) accurately identifying the hidden non-stationary regime of asset return distributions~\cite{markowitz1952portfolio}, and (2) solving discrete, cardinality-constrained combinatorial allocations across turbulent asset manifolds~\cite{lucas2014ising}.
+
+Classical algorithmic pipelines encounter severe scalability bottlenecks:
+\begin{enumerate}
+    \item \textbf{High-Dimensional Non-Linear State Representation:} Classical hidden Markov models (HMMs) and recurrent neural networks struggle to represent complex non-linear cross-asset correlation geometries without overfitting or suffering representation collapse during crisis regimes.
+    \item \textbf{NP-Hard Cardinality Constraints:} Exact Mean-Variance optimization under discrete asset selection constraints is NP-hard, forcing classical managers to rely on greedy heuristics or convex relaxations that degrade portfolio diversification.
+    \item \textbf{NISQ Degradation:} Contemporary quantum computing operates in the Noisy Intermediate-Scale Quantum (NISQ) era~\cite{temme2017error}, plagued by gate decoherence, depolarizing channels, and barren plateau optimization voids~\cite{mcclean2018barren}.
+\end{enumerate}
+
+To overcome these foundational limitations, this paper presents the \textit{Hybrid Quantum-Classical Quantitative Engine}, a mathematically unified, production-grade framework engineered with PennyLane and PyTorch. The engine features:
+\begin{itemize}
+    \item A two-stage hybrid architecture integrating temporal LSTM sequence representations with parameterized Variational Quantum Circuits (VQCs) and Projected Quantum Kernels~\cite{huang2021power}.
+    \item An exact mapping of cardinality-constrained Markowitz Mean-Variance problems onto Ising Spin Hamiltonians solved via QAOA~\cite{farhi2014quantum}.
+    \item Unitary-folded Zero-Noise Extrapolation (ZNE) and layer-wise pre-training mitigating barren plateaus and NISQ noise~\cite{skolik2021layerwise}.
+\end{itemize}
